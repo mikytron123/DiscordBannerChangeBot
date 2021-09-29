@@ -2,6 +2,7 @@
 import discord
 import traceback
 from discord.ext.commands import Bot, Cog,MessageConverter,TextChannelConverter,command
+from discord.ext import tasks
 import asyncio
 import pandas as pd
 import time
@@ -62,11 +63,12 @@ class Slash(Cog):
         img = random.choice(images)
         try:
             for attachment in img.attachments:
-                await self.guild.edit(banner=attachment.read())
+                await self.guild.edit(banner= await attachment.read())
                 print('banner changed sucessfully')
                 break
         except Exception as e:
             print(e)
+            print(traceback.format_exc())
 
     def cog_unload(self):
         self.bannerchanger.cancel()
@@ -85,7 +87,8 @@ class Slash(Cog):
             print(e)
             await ctx.send("couldnt parse time string")
             return
-        sec,minutes,hours = timedelta.seconds,timedelta.minutes,timedelta.hours
+        components = timedelta.components
+        sec,minutes,hours = components.seconds,components.minutes,components.hours
         self.sched = str(timedelta)
         self.bannerchanger.change_interval(seconds=sec,minutes=minutes,hours=hours)
         self.bannerchanger.start()

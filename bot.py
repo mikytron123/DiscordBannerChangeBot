@@ -1,7 +1,5 @@
 # bot.py
-from discord import Intents
 from discord.ext.commands import Bot
-from discord_slash import SlashCommand
 from dotenv import load_dotenv
 import os
 import discord
